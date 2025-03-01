@@ -1,6 +1,7 @@
 mod user_routes;
 mod application_state;
 mod transactions;
+mod ideal_budget;
 
 use application_state::{initialize_application_state, ApplicationState};
 use axum::{
