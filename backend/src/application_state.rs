@@ -2,23 +2,22 @@ use std::{env, sync::Arc};
 use neo4rs::{query, Graph, Query};
 use tokio::sync::Mutex;
 use dotenv::dotenv;
-use plaid::{PlaidAuth, PlaidClient};
 
 pub struct ApplicationState {
     pub neo4j_connection: Graph,
-    pub plaid_client: PlaidClient,
+    //pub plaid_client: PlaidClient,
 }
 
 pub async fn initialize_application_state() -> Arc<Mutex<ApplicationState>> {
     // env variables
-    dotenv().ok();
-
+    dotenv::dotenv().ok();
+    
     // setup tracing information
     tracing_subscriber::fmt().with_max_level(tracing::Level::DEBUG).init();
 
     let neo4j_connection = initialize_database().await;
 
-    let plaid_client: PlaidClient = initialize_plaid_client().await;
+    //let plaid_client: PlaidClient = initialize_plaid_client().await;
 
     tracing::info!("Successfully connected to database");
 
@@ -26,7 +25,7 @@ pub async fn initialize_application_state() -> Arc<Mutex<ApplicationState>> {
         Mutex::new(
             ApplicationState {
                 neo4j_connection,
-                plaid_client,
+                //plaid_client,
             }
         )
     )
@@ -51,12 +50,12 @@ async fn initialize_database() -> Graph {
     neo4j_connection
 } 
 
-async fn initialize_plaid_client() -> PlaidClient {
-    let plaid_auth = PlaidAuth::from_env();
-
-    let plaid_client = PlaidClient::with_auth(plaid_auth);
-
-    tracing::info!("Successfully created plaid client");
-
-    plaid_client
-}
+//async fn initialize_plaid_client() -> PlaidClient {
+//    let plaid_auth = PlaidAuth::from_env();
+//
+//    let plaid_client = PlaidClient::with_auth(plaid_auth);
+//
+//    tracing::info!("Successfully created plaid client");
+//
+//    plaid_client
+//}
