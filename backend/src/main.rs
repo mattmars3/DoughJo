@@ -13,16 +13,24 @@ use user_routes::{create_user, hello_route, login_user};
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
+use tower_http::cors::{CorsLayer, Any};
+
 #[tokio::main]
 async fn main() {
 
     let application_state: Arc<Mutex<ApplicationState>> = initialize_application_state().await;
+
+    let cors = CorsLayer::new()
+        .allow_origin(Any) // Allows all origins
+        .allow_methods(Any) // Allows all HTTP methods
+        .allow_headers(Any); // Allows all headers
 
     let application = Router::new()
         .without_v07_checks()
         .route("/", get(hello_route))
         .route("/user/create", post(create_user))
         .route("/user/login", post(login_user))
+        .layer(cors)
 
         .with_state(application_state);
 
