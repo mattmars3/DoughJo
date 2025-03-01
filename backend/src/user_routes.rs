@@ -143,9 +143,10 @@ impl LoginUser {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserJWT {
-    email: String,
     exp: usize,
-    iat: usize
+    iat: usize,
+
+    email: String,
 }
 
 pub fn generate_jwt(userjwt: UserJWT) -> String {
