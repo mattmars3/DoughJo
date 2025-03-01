@@ -12,3 +12,6 @@
 
 ## Connect Bank Account & Transactions
 
+## Notes
+on create user, the user should connect their bank account
+

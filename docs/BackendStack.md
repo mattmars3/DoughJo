@@ -2,5 +2,6 @@
 Rust w/ Axum & Tokio
 
 ## Libraries
-Plaid API for bank verification
+Plaid API for bank verification - get transactions
+
 
