@@ -20,8 +20,8 @@ pub struct CreateUser {
     // User information
     
     // Questionarre information
-    credit_limit_dollars: i32,
-    credit_utilized_dollars: i32,
+    //credit_limit_dollars: i32,
+    //credit_utilized_dollars: i32,
 
 }
 
@@ -34,14 +34,10 @@ pub async fn create_user(State(app_state): State<Arc<Mutex<ApplicationState>>>, 
         query("
             MERGE (u:User {email: $user_email})
             SET u.hashed_password = $hashed_password
-            SET u.credit_limit_dollars = $credit_limit_dollars
-            SET u.credit_utilized_dollars = $credit_utilized_dollars
             RETURN u
         ")
         .param("user_email", payload.email)
         .param("hashed_password", hash_password(&payload.plaintext_password))
-        .param("credit_utilized_dollars", payload.credit_utilized_dollars)
-        .param("credit_limit_dollars", payload.credit_limit_dollars)
     ).await;
 
     match db_resp {
