@@ -3,7 +3,7 @@ use neo4rs::Id;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tokio::sync::Mutex;
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 
 use crate::application_state::ApplicationState;
 
@@ -139,28 +139,104 @@ pub async fn ideal_budget(
     //"".to_string()
 } 
 
-pub async fn get_transactions_for_month() -> Json<IdealBudgetResponse> {
+pub async fn get_transactions_for_month() -> String {
+    tracing::info!("Getting randomized transactions!");
+
     let categories = give_labels();
     let parents = give_parents();
 
     let num_transactions = rand::random_range(100..200);
 
     let mut budget_response = IdealBudgetResponse {
-        labels: vec![],
-        parents: vec![],
+        labels: vec!["Budget".to_string(), "Wants".to_string(), "Needs".to_string(), "Savings".to_string()],
+        parents: vec!["".to_string(), "Budget".to_string(), "Budget".to_string(), "Budget".to_string()],
         values: vec![],
     };
+
+    let mut wants = 0.0;
+    let mut needs = 0.0;
+    let mut savings = 0.0;
+
+    let mut hm: HashMap<String, f64> = HashMap::new();
 
     for _ in 0..num_transactions {
         let category_chosen_index = rand::random_range(3..categories.len());
 
-        budget_response.labels.push(categories[category_chosen_index].clone());
-        budget_response.parents.push(parents[category_chosen_index].clone());
+        let curr_label = categories[category_chosen_index].clone();
+        let curr_parent = parents[category_chosen_index].clone();
 
-        let dollars_spent = rand::random_range(5..300);
+        let dollars_spent = rand::random_range(5..300) as f64;
 
-        budget_response.values.push(dollars_spent as f64);
+        if hm.contains_key(&curr_label) {
+            hm.insert(curr_label.clone(), hm.get(&curr_label).unwrap() + dollars_spent);
+        } else {
+            hm.insert(curr_label.clone(), dollars_spent);
+        }
+
+        if curr_parent == *"Wants" {
+            wants += dollars_spent;
+        } else if curr_parent == *"Needs" {
+            needs += dollars_spent;
+        } else {
+            savings += dollars_spent;
+        }
     }
 
-    Json(budget_response)
+    //vec!["Needs", "Wants", "Savings", "Food and Drink", "Rent and Utilities", "Transportation", "Entertainment", "Personal Care", "General Merchandise", "Travel", "Loan Payment"]
+    //vec!["Needs", "Wants", "Savings", "Needs",            "Needs",            "Needs",            "Wants",        "Wants",        "Wants",                "Wants", "Savings"]
+    
+    // DISCLAIMER this is absolutely the most disgusting code I have ever written in my life. It
+    // works. I have no time. I don't care
+    if hm.contains_key("Food and Drink") {
+        budget_response.labels.push("Food and Drink".to_string());
+        budget_response.parents.push("Needs".to_string());
+        budget_response.values.push(*hm.get("Food and Drink").unwrap())
+    } 
+    if hm.contains_key("Rent and Utilities") {
+        budget_response.labels.push("Rent and Utilities".to_string());
+        budget_response.parents.push("Needs".to_string());
+        budget_response.values.push(*hm.get("Rent and Utilities").unwrap())
+    } 
+    if hm.contains_key("Transportation") {
+        budget_response.labels.push("Transportation".to_string());
+        budget_response.parents.push("Needs".to_string());
+        budget_response.values.push(*hm.get("Transportation").unwrap())
+    } 
+    if hm.contains_key("Entertainment") {
+        budget_response.labels.push("Entertainment".to_string());
+        budget_response.parents.push("Wants".to_string());
+        budget_response.values.push(*hm.get("Entertainment").unwrap())
+    } 
+    if hm.contains_key("Personal Care") {
+        budget_response.labels.push("Personal Care".to_string());
+        budget_response.parents.push("Wants".to_string());
+        budget_response.values.push(*hm.get("Personal Care").unwrap())
+    } 
+    if hm.contains_key("General Merchandise") {
+        budget_response.labels.push("General Merchandise".to_string());
+        budget_response.parents.push("Wants".to_string());
+        budget_response.values.push(*hm.get("General Merchandise").unwrap())
+    } 
+    if hm.contains_key("Travel") {
+        budget_response.labels.push("Travel".to_string());
+        budget_response.parents.push("Wants".to_string());
+        budget_response.values.push(*hm.get("Travel").unwrap())
+    } 
+    if hm.contains_key("Loan Payment") {
+        budget_response.labels.push("Loan Payment".to_string());
+        budget_response.parents.push("Savings".to_string());
+        budget_response.values.push(*hm.get("Loan Payment").unwrap())
+    }
+
+    budget_response.values.insert(0, 0.0);
+    budget_response.values.insert(1, wants);
+    budget_response.values.insert(2, needs);
+    budget_response.values.insert(3, savings);
+
+    //Json(budget_response);
+    let serialized_response = serde_json::to_string(&budget_response).expect("Unable to serialize transactions");
+
+    println!("{}", &serialized_response);
+
+    serialized_response
 }

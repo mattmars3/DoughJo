@@ -10,6 +10,7 @@
 <div id="chart" style="width: 600px; height: 600px;"></div>
 
 <script>
+
 function scaleParentValues(labels, parents, values) {
     // Find top-level parents (direct children of 'Root' or '')
     const parentSet = new Set(parents);
@@ -58,24 +59,34 @@ function renderSunburst(labels, parents, values) {
 // const values = [150, 60, 40, 30, 30, 20, 20];  // Raw values
 
 // const SERVER_IP = "3.145.180.241:3333";
-const SERVER_IP = "localhost:3333";
 
-
-fetch("http://" + SERVER_IP + "/budget/ideal", {
-  method: "GET",
-  headers: {
-    "Content-Type": "application/json"
-  }
-})
-.then(response => {
-  response.json().then(item => console.log(item))
-})
-.catch(error => {
-
-});
-
+async function fetchPlotData() {
   
-// renderSunburst(labels, parents, values);
+  try {
+    const full_route = "http://localhost:3333/budget/current"
+    const response = await fetch(full_route, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("ERROR: ", error)
+  }
+} 
+
+(async () => {
+  const plot_data = await fetchPlotData()
+
+  console.log(plot_data["labels"])
+  console.log(plot_data["parents"])
+  console.log(plot_data["values"])
+    
+  renderSunburst(plot_data["labels"], plot_data["parents"], plot_data["values"]);
+})()
 </script>
 
 </body>
