@@ -1,16 +1,18 @@
-use axum::{extract::Query, response::IntoResponse};
+use axum::{extract::Query, response::IntoResponse, Json};
+use neo4rs::Id;
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 use tokio::sync::Mutex;
 use std::sync::Arc;
 
 use crate::application_state::ApplicationState;
 
-fn give_labels() -> Vec<String> {
-    vec!["Needs", "Wants", "Savings", "Food and Drink", "Rent and Utilities", "Transportation", "Medical", "Entertainment", "Personal Care", "General Merchandise", "Travel", "Loan Payment"].into_iter().map(|item| item.to_string()).collect::<Vec<String>>()
+pub fn give_labels() -> Vec<String> {
+    vec!["Needs", "Wants", "Savings", "Food and Drink", "Rent and Utilities", "Transportation", "Entertainment", "Personal Care", "General Merchandise", "Travel", "Loan Payment"].into_iter().map(|item| item.to_string()).collect::<Vec<String>>()
 }
 
-fn give_parents() -> Vec<String> {
-    vec!["Needs", "Wants", "Savings", "Needs", "Needs", "Needs", "Needs", "Wants", "Wants", "Wants", "Wants", "Savings"]
+pub fn give_parents() -> Vec<String> {
+    vec!["Needs", "Wants", "Savings", "Needs", "Needs", "Needs", "Wants", "Wants", "Wants", "Wants", "Savings"]
         .into_iter()
         .map(|item| item.to_string())
         .collect()
@@ -105,27 +107,60 @@ fn give_values(income: i32, debt: i32) -> Vec<f64> {
         }
     }
 
-    let values = vec![n, w, s, f, tran, e, p, g, trav, repay];
+    let values = vec![n, w, s, f, h, tran, e, p, g, trav, repay];
     values
 }
 
-struct BudgetParameters {
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct BudgetParameters {
     income: i32,
     debt: i32
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-struct IdealBudgetResponse {
-    labels: Vec<String>,
-    parents: Vec<String>,
-    values: Vec<f64>,
+pub struct IdealBudgetResponse {
+    pub labels: Vec<String>,
+    pub parents: Vec<String>,
+    pub values: Vec<f64>,
 }
 
 pub async fn ideal_budget(
-    Query(budget_params): Query<BudgetParameters>) -> IdealBudgetResponse {
-    IdealBudgetResponse {
+    Query(budget_params): Query<BudgetParameters>) -> Json<IdealBudgetResponse> {
+    let response = IdealBudgetResponse {
         labels: give_labels(),
         parents: give_parents(),
         values: give_values(budget_params.income, budget_params.debt),
-    }    
+    };
+
+    assert!(response.values.len() == response.parents.len() && response.parents.len() == response.values.len());
+
+    Json(response)
+    //"".to_string()
 } 
+
+pub async fn get_transactions_for_month() -> Json<IdealBudgetResponse> {
+    let categories = give_labels();
+    let parents = give_parents();
+
+    let num_transactions = rand::random_range(100..200);
+
+    let mut budget_response = IdealBudgetResponse {
+        labels: vec![],
+        parents: vec![],
+        values: vec![],
+    };
+
+    for _ in 0..num_transactions {
+        let category_chosen_index = rand::random_range(3..categories.len());
+
+        budget_response.labels.push(categories[category_chosen_index].clone());
+        budget_response.parents.push(parents[category_chosen_index].clone());
+
+        let dollars_spent = rand::random_range(5..300);
+
+        budget_response.values.push(dollars_spent as f64);
+    }
+
+    Json(budget_response)
+}

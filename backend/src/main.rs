@@ -4,7 +4,7 @@ mod transactions;
 mod ideal_budget;
 
 use application_state::{initialize_application_state, ApplicationState};
-use ideal_budget::ideal_budget;
+use ideal_budget::{ideal_budget, get_transactions_for_month};
 use axum::{
     Router,
     routing::{get, post}
@@ -31,7 +31,8 @@ async fn main() {
         .route("/", get(hello_route))
         .route("/user/create", post(create_user))
         .route("/user/login", post(login_user))
-        //.route("/budget/ideal", get(ideal_budget))
+        .route("/budget/ideal", get(ideal_budget))
+        .route("/budget/current", get(get_transactions_for_month))
         .layer(cors)
 
         .with_state(application_state);
