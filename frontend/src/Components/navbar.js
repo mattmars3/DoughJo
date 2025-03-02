@@ -9,9 +9,8 @@ function Navbar() {
         <div className="space-x-4">
           <Link to="/" className="hover:underline">Home</Link>
           <Link to="/dashboard" className="hover:underline">Dashboard</Link>
-          <Link to="/budget" className="hover:underline">Budget</Link>
-          <Link to="/credit" className="hover:underline">Credit Score</Link>
-          <Link to="/tips" className="hover:underline">Tips</Link>
+          <Link to="/budget-tips" className="hover:underline">Budget Tips</Link> {/* ✅ Fixed */}
+          <Link to="/credit-tips" className="hover:underline">Credit Tips</Link> {/* ✅ Fixed */}
         </div>
       </div>
     </nav>

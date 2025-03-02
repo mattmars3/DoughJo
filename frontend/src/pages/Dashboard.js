@@ -5,23 +5,23 @@ function Dashboard() {
 
   useEffect(() => {
     const storedScore = localStorage.getItem("creditScore");
-    console.log("Retrieved Credit Score:", storedScore); // Debugging log
-
     if (storedScore) {
       setCreditScore(storedScore);
     }
   }, []);
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-96 text-center">
+        <h1 className="text-3xl font-bold text-blue-700">Dashboard</h1>
+        
         {creditScore ? (
-          <p className="text-xl mt-4">
-            Your Credit Score: <span className="font-bold text-blue-600">{creditScore}</span>
+          <p className="text-xl mt-6 font-medium">
+            Your Credit Score based on your current habits would be about: 
+            <span className="font-bold text-blue-600 block text-5xl mt-2">{creditScore}</span>
           </p>
         ) : (
-          <p className="text-xl mt-4">No credit score available. Please complete the questionnaire.</p>
+          <p className="text-lg mt-4">No credit score available. Please complete the questionnaire.</p>
         )}
       </div>
     </div>

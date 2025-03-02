@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 
 const QuestionnairePage = () => {
   const navigate = useNavigate();
-  const [creditScore, setCreditScore] = useState(null);
   const [amountOwed, setAmountOwed] = useState('');
   const [newCredit, setNewCredit] = useState('');
   const [paymentHistory, setPaymentHistory] = useState('');
@@ -40,59 +39,50 @@ const QuestionnairePage = () => {
     else if (creditMix === 1) score += 5;
     else score -= 30;
 
-    score = Math.max(350, Math.min(850, score)); // Keep score within valid range
-    setCreditScore(score); // Update state
-    return score;
+    return Math.max(350, Math.min(850, score));
   };
 
   const handleConfirmRegistration = () => {
-    const finalScore = calculateCreditScore(); // Ensure the score is calculated
-    console.log("Final Credit Score:", finalScore); // Debugging log
-    localStorage.setItem("creditScore", finalScore); // Save score to localStorage
-    navigate("/dashboard"); // Redirect to dashboard
-};
+    const finalScore = calculateCreditScore();
+    console.log("Final Credit Score:", finalScore);
+    localStorage.setItem("creditScore", finalScore);
+    navigate("/dashboard");
+  };
 
   return (
-    <div style={styles.container}>
-      <h2 style={styles.heading}>Financial Questionnaire</h2>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-96">
+        <h2 className="text-2xl font-bold text-center text-blue-700 mb-4">Financial Questionnaire</h2>
 
-      {/* Input fields for credit factors */}
-      <div style={styles.formGroup}>
-        <label>Amount Owed (% of credit limit used):</label>
-        <input type="number" value={amountOwed} onChange={(e) => setAmountOwed(Number(e.target.value))} />
+        <div className="space-y-3">
+          <label className="block font-medium">Amount Owed (% of credit limit used):</label>
+          <input type="number" value={amountOwed} onChange={(e) => setAmountOwed(Number(e.target.value))}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" />
+
+          <label className="block font-medium">New Credit (recently opened accounts):</label>
+          <input type="number" value={newCredit} onChange={(e) => setNewCredit(Number(e.target.value))}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" />
+
+          <label className="block font-medium">Payment History (% on-time payments):</label>
+          <input type="number" value={paymentHistory} onChange={(e) => setPaymentHistory(Number(e.target.value))}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" />
+
+          <label className="block font-medium">Credit History Length (Years):</label>
+          <input type="number" value={creditHistoryLength} onChange={(e) => setCreditHistoryLength(Number(e.target.value))}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" />
+
+          <label className="block font-medium">Credit Mix (variety of credit types):</label>
+          <input type="number" value={creditMix} onChange={(e) => setCreditMix(Number(e.target.value))}
+            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400" />
+
+          <button onClick={handleConfirmRegistration} 
+            className="w-full mt-4 bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition duration-300">
+            Confirm Registration
+          </button>
+        </div>
       </div>
-
-      <div style={styles.formGroup}>
-        <label>New Credit (recently opened accounts):</label>
-        <input type="number" value={newCredit} onChange={(e) => setNewCredit(Number(e.target.value))} />
-      </div>
-
-      <div style={styles.formGroup}>
-        <label>Payment History (% on-time payments):</label>
-        <input type="number" value={paymentHistory} onChange={(e) => setPaymentHistory(Number(e.target.value))} />
-      </div>
-
-      <div style={styles.formGroup}>
-        <label>Credit History Length (Years):</label>
-        <input type="number" value={creditHistoryLength} onChange={(e) => setCreditHistoryLength(Number(e.target.value))} />
-      </div>
-
-      <div style={styles.formGroup}>
-        <label>Credit Mix (variety of credit types):</label>
-        <input type="number" value={creditMix} onChange={(e) => setCreditMix(Number(e.target.value))} />
-      </div>
-
-      {/* Confirm Registration Button */}
-      <button onClick={handleConfirmRegistration} style={styles.button}>Confirm Registration</button>
     </div>
   );
-};
-
-const styles = {
-  container: { maxWidth: "500px", margin: "auto", padding: "20px" },
-  heading: { textAlign: "center" },
-  formGroup: { marginBottom: "10px" },
-  button: { padding: "10px", backgroundColor: "#007bff", color: "white", border: "none", cursor: "pointer" },
 };
 
 export default QuestionnairePage;

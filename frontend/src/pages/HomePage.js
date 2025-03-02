@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 function HomePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <h1 className="text-3xl font-bold mb-6">Welcome to BudgetMaster</h1>
+      <h1 className="text-3xl font-bold mb-6">Welcome to DoughJo</h1>
       <p className="text-lg text-gray-700 mb-6">
         Track your budget, improve your credit, and take control of your finances.
       </p>

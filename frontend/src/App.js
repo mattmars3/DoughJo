@@ -7,12 +7,11 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import QuestionnairePage from "./pages/QuestionnairePage";
-import BudgetPage from "./pages/BudgetPage";
-import CreditPage from "./pages/CreditPage";
-import TipsPage from "./pages/TipsPage";
+import BudgetTips from "./pages/BudgetTips"; // ✅ Fixed import
+import CreditTips from "./pages/CreditTips"; // ✅ Fixed import
 
 // Import Components
-import Navbar from "./Components/navbar";
+import Navbar from "./Components/Navbar"; // ✅ Ensure correct capitalization
 
 // Import Tailwind CSS
 import "./index.css";
@@ -27,9 +26,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/questionnaire" element={<QuestionnairePage />} />
-        <Route path="/budget" element={<BudgetPage />} />
-        <Route path="/credit" element={<CreditPage />} />
-        <Route path="/tips" element={<TipsPage />} />
+        <Route path="/budget-tips" element={<BudgetTips />} /> {/* ✅ Fixed */}
+        <Route path="/credit-tips" element={<CreditTips />} /> {/* ✅ Fixed */}
       </Routes>
     </Router>
   );
