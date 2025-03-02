@@ -1,171 +1,98 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const QuestionnairePage = () => {
-  // List of all 50 U.S. states in alphabetical order
-  const states = [
-    { value: 'AL', label: 'Alabama' },
-    { value: 'AK', label: 'Alaska' },
-    { value: 'AZ', label: 'Arizona' },
-    { value: 'AR', label: 'Arkansas' },
-    { value: 'CA', label: 'California' },
-    { value: 'CO', label: 'Colorado' },
-    { value: 'CT', label: 'Connecticut' },
-    { value: 'DE', label: 'Delaware' },
-    { value: 'FL', label: 'Florida' },
-    { value: 'GA', label: 'Georgia' },
-    { value: 'HI', label: 'Hawaii' },
-    { value: 'ID', label: 'Idaho' },
-    { value: 'IL', label: 'Illinois' },
-    { value: 'IN', label: 'Indiana' },
-    { value: 'IA', label: 'Iowa' },
-    { value: 'KS', label: 'Kansas' },
-    { value: 'KY', label: 'Kentucky' },
-    { value: 'LA', label: 'Louisiana' },
-    { value: 'ME', label: 'Maine' },
-    { value: 'MD', label: 'Maryland' },
-    { value: 'MA', label: 'Massachusetts' },
-    { value: 'MI', label: 'Michigan' },
-    { value: 'MN', label: 'Minnesota' },
-    { value: 'MS', label: 'Mississippi' },
-    { value: 'MO', label: 'Missouri' },
-    { value: 'MT', label: 'Montana' },
-    { value: 'NE', label: 'Nebraska' },
-    { value: 'NV', label: 'Nevada' },
-    { value: 'NH', label: 'New Hampshire' },
-    { value: 'NJ', label: 'New Jersey' },
-    { value: 'NM', label: 'New Mexico' },
-    { value: 'NY', label: 'New York' },
-    { value: 'NC', label: 'North Carolina' },
-    { value: 'ND', label: 'North Dakota' },
-    { value: 'OH', label: 'Ohio' },
-    { value: 'OK', label: 'Oklahoma' },
-    { value: 'OR', label: 'Oregon' },
-    { value: 'PA', label: 'Pennsylvania' },
-    { value: 'RI', label: 'Rhode Island' },
-    { value: 'SC', label: 'South Carolina' },
-    { value: 'SD', label: 'South Dakota' },
-    { value: 'TN', label: 'Tennessee' },
-    { value: 'TX', label: 'Texas' },
-    { value: 'UT', label: 'Utah' },
-    { value: 'VT', label: 'Vermont' },
-    { value: 'VA', label: 'Virginia' },
-    { value: 'WA', label: 'Washington' },
-    { value: 'WV', label: 'West Virginia' },
-    { value: 'WI', label: 'Wisconsin' },
-    { value: 'WY', label: 'Wyoming' },
-  ];
+  const navigate = useNavigate();
+  const [creditScore, setCreditScore] = useState(null);
+  const [amountOwed, setAmountOwed] = useState('');
+  const [newCredit, setNewCredit] = useState('');
+  const [paymentHistory, setPaymentHistory] = useState('');
+  const [creditHistoryLength, setCreditHistoryLength] = useState('');
+  const [creditMix, setCreditMix] = useState('');
+
+  const calculateCreditScore = () => {
+    let score = 600;
+
+    if (paymentHistory >= 95) score += 100;
+    else if (paymentHistory >= 80) score += 50;
+    else if (paymentHistory >= 60) score -= 50;
+    else score -= 150;
+
+    if (amountOwed < 10) score += 80;
+    else if (amountOwed < 30) score += 40;
+    else if (amountOwed < 50) score -= 30;
+    else if (amountOwed < 75) score -= 80;
+    else score -= 150;
+
+    if (creditHistoryLength > 15) score += 70;
+    else if (creditHistoryLength > 8) score += 50;
+    else if (creditHistoryLength > 3) score += 20;
+    else if (creditHistoryLength > 1) score -= 50;
+    else score -= 100;
+
+    if (newCredit === 0) score += 30;
+    else if (newCredit <= 2) score += 10;
+    else if (newCredit <= 5) score -= 30;
+    else score -= 70;
+
+    if (creditMix >= 3) score += 40;
+    else if (creditMix === 2) score += 20;
+    else if (creditMix === 1) score += 5;
+    else score -= 30;
+
+    score = Math.max(350, Math.min(850, score)); // Keep score within valid range
+    setCreditScore(score); // Update state
+    return score;
+  };
+
+  const handleConfirmRegistration = () => {
+    const finalScore = calculateCreditScore(); // Ensure the score is calculated
+    console.log("Final Credit Score:", finalScore); // Debugging log
+    localStorage.setItem("creditScore", finalScore); // Save score to localStorage
+    navigate("/dashboard"); // Redirect to dashboard
+};
 
   return (
     <div style={styles.container}>
       <h2 style={styles.heading}>Financial Questionnaire</h2>
-      <form style={styles.form}>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>State:</label>
-          <select style={styles.select}>
-            {states.map((state) => (
-              <option key={state.value} value={state.value}>
-                {state.label}
-              </option>
-            ))}
-          </select>
-        </div>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label}>County:</label>
-          <input
-            type="text"
-            placeholder="Enter your county"
-            style={styles.input}
-          />
-        </div>
+      {/* Input fields for credit factors */}
+      <div style={styles.formGroup}>
+        <label>Amount Owed (% of credit limit used):</label>
+        <input type="number" value={amountOwed} onChange={(e) => setAmountOwed(Number(e.target.value))} />
+      </div>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Annual Salary:</label>
-          <input
-            type="number"
-            placeholder="Enter your salary"
-            style={styles.input}
-          />
-        </div>
+      <div style={styles.formGroup}>
+        <label>New Credit (recently opened accounts):</label>
+        <input type="number" value={newCredit} onChange={(e) => setNewCredit(Number(e.target.value))} />
+      </div>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Savings Amount:</label>
-          <input
-            type="number"
-            placeholder="Enter your savings"
-            style={styles.input}
-          />
-        </div>
+      <div style={styles.formGroup}>
+        <label>Payment History (% on-time payments):</label>
+        <input type="number" value={paymentHistory} onChange={(e) => setPaymentHistory(Number(e.target.value))} />
+      </div>
 
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Debt Amount:</label>
-          <input
-            type="number"
-            placeholder="Enter your debt amount"
-            style={styles.input}
-          />
-        </div>
+      <div style={styles.formGroup}>
+        <label>Credit History Length (Years):</label>
+        <input type="number" value={creditHistoryLength} onChange={(e) => setCreditHistoryLength(Number(e.target.value))} />
+      </div>
 
-        <button type="submit" style={styles.button}>
-          Submit
-        </button>
-      </form>
+      <div style={styles.formGroup}>
+        <label>Credit Mix (variety of credit types):</label>
+        <input type="number" value={creditMix} onChange={(e) => setCreditMix(Number(e.target.value))} />
+      </div>
+
+      {/* Confirm Registration Button */}
+      <button onClick={handleConfirmRegistration} style={styles.button}>Confirm Registration</button>
     </div>
   );
 };
 
-// Basic inline styles for visual appeal
 const styles = {
-  container: {
-    maxWidth: '500px',
-    margin: '0 auto',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
-    backgroundColor: '#f9f9f9',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-  },
-  heading: {
-    textAlign: 'center',
-    color: '#333',
-    marginBottom: '20px',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '15px',
-  },
-  formGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '5px',
-  },
-  label: {
-    fontWeight: 'bold',
-    color: '#555',
-  },
-  input: {
-    padding: '8px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    fontSize: '16px',
-  },
-  select: {
-    padding: '8px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    fontSize: '16px',
-    backgroundColor: '#fff',
-  },
-  button: {
-    padding: '10px',
-    borderRadius: '4px',
-    border: 'none',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    fontSize: '16px',
-    cursor: 'pointer',
-  },
+  container: { maxWidth: "500px", margin: "auto", padding: "20px" },
+  heading: { textAlign: "center" },
+  formGroup: { marginBottom: "10px" },
+  button: { padding: "10px", backgroundColor: "#007bff", color: "white", border: "none", cursor: "pointer" },
 };
 
 export default QuestionnairePage;

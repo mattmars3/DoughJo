@@ -2,8 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 // Import Pages
-import Questionnaire from "./pages/Questionnaire";
-
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -32,8 +30,6 @@ function App() {
         <Route path="/budget" element={<BudgetPage />} />
         <Route path="/credit" element={<CreditPage />} />
         <Route path="/tips" element={<TipsPage />} />
-        <Route path="/questionnaire" element={<Questionnaire />} />
-
       </Routes>
     </Router>
   );

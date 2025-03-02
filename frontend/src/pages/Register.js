@@ -7,7 +7,7 @@ const SERVER_IP_ADDR = "http://3.145.180.241:3333"; // Replace with actual backe
 const Register = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // Allows navigation to another page
+  const navigate = useNavigate(); // Correctly initialize navigation
 
   const registerUser = async () => {
     console.log("Register button clicked");
@@ -21,10 +21,11 @@ const Register = () => {
 
       console.log("User registered successfully!", response.data);
       
-      // Redirect to the questionnaire page after successful registration
+      // ✅ Navigate only after the API request is successful
       navigate("/questionnaire"); 
     } catch (error) {
       console.error("Error registering user:", error);
+      alert("Registration failed. Please try again.");
     }
   };
 
