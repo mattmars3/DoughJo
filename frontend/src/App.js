@@ -11,7 +11,7 @@ import BudgetTips from "./pages/BudgetTips"; // ✅ Fixed import
 import CreditTips from "./pages/CreditTips"; // ✅ Fixed import
 
 // Import Components
-import Navbar from "./Components/Navbar"; // ✅ Ensure correct capitalization
+import Navbar from "./Components/navbar.js"; // ✅ Ensure correct capitalization
 
 // Import Tailwind CSS
 import "./index.css";

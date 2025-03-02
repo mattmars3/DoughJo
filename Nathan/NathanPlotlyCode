@@ -46,7 +46,7 @@ function renderSunburst(labels, parents, values) {
     }];
 
     const layout = {
-        title: 'Custom Sunburst Chart (Parents = 100%)',
+        title: 'Current Month Budgeting',
         margin: {t: 50, l: 20, r: 20, b: 20}
     };
 
@@ -61,7 +61,6 @@ function renderSunburst(labels, parents, values) {
 // const SERVER_IP = "3.145.180.241:3333";
 
 async function fetchPlotData() {
-  
   try {
     const full_route = "http://localhost:3333/budget/current"
     const response = await fetch(full_route, {
@@ -71,15 +70,18 @@ async function fetchPlotData() {
       }
     })
 
+    console.log("Fetch Succeeded")
+
     const data = await response.json();
     return data;
   } catch (error) {
     console.error("ERROR: ", error)
+    return {}
   }
 } 
 
 (async () => {
-  const plot_data = await fetchPlotData()
+  const plot_data = await fetchPlotData();
 
   console.log(plot_data["labels"])
   console.log(plot_data["parents"])
