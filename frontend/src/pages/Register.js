@@ -15,8 +15,8 @@ const Register = () => {
 
     try {
       const response = await axios.post(`${SERVER_IP_ADDR}/user/create`, {
-        name: name,
-        password: password,
+        email: name,
+        plaintext_password: password,
       });
 
       console.log("User registered successfully!", response.data);
