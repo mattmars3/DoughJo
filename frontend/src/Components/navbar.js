@@ -5,7 +5,7 @@ function Navbar() {
   return (
     <nav className="bg-blue-600 text-white p-4">
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-xl font-bold">BudgetMaster</h1>
+        <h1 className="text-xl font-bold">DoughJo</h1>
         <div className="space-x-4">
           <Link to="/" className="hover:underline">Home</Link>
           <Link to="/dashboard" className="hover:underline">Dashboard</Link>
