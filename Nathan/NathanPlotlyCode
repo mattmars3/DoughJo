@@ -53,12 +53,29 @@ function renderSunburst(labels, parents, values) {
 }
 
 // Example usage
-const labels = ['Root', 'Fruits', 'Vegetables', 'Apples', 'Bananas', 'Carrots', 'Broccoli'];
-const parents = ['', 'Root', 'Root', 'Fruits', 'Fruits', 'Vegetables', 'Vegetables'];
-const values = [150, 60, 40, 30, 30, 20, 20];  // Raw values
+// const labels = ['Root', 'Fruits', 'Vegetables', 'Apples', 'Bananas', 'Carrots', 'Broccoli'];
+// const parents = ['', 'Root', 'Root', 'Fruits', 'Fruits', 'Vegetables', 'Vegetables'];
+// const values = [150, 60, 40, 30, 30, 20, 20];  // Raw values
+
+// const SERVER_IP = "3.145.180.241:3333";
+const SERVER_IP = "localhost:3333";
+
+
+fetch("http://" + SERVER_IP + "/budget/ideal", {
+  method: "GET",
+  headers: {
+    "Content-Type": "application/json"
+  }
+})
+.then(response => {
+  response.json().then(item => console.log(item))
+})
+.catch(error => {
+
+});
 
   
-renderSunburst(labels, parents, values);
+// renderSunburst(labels, parents, values);
 </script>
 
 </body>
